@@ -12,30 +12,30 @@
 	<table border="1">
 		<tr>
 			<th>Id</th>
-			<th>picture</th>
-			<th>UserNAme</th>
-			<th>email</th>
-			<th>nb_books</th>
+			<th>Username</th>
+			<th>Email</th>
+			<th colspan="3">Actions</th>
+			{# <th>nb_books</th> #}
 		</tr>
-		{% set l=0 %}
 		{% for elt in authors %}
 			<tr>
 				<td>{{elt.id}}</td>
-				<td><img src="{{elt.picture}}" alt="pas d'image"></td>
+				{# <td><img src="{{elt.picture}}" alt="pas d'image"></td> #}
 				<td>{{elt.username | upper}}</td>
 				<td>{{elt.email}}</td>
-				<td>{{elt.nb_books}}</td>
+				{# <td>{{elt.nb_books}}</td> #}
 				<td>
 					<a href="{{path("author_authorDetails",{'id': elt.id})}}">Details</a>
 				</td>
-				{% set l= l + elt.nb_books %}
+				<td>
+					<a href="{{path('author_updateAuthor', {'id': elt.id })}}">Edit</a>
+				</td>
+				<td>
+					<a href="{{path('author_deleteAuthor', {'id': elt.id })}}">Delete</a>
+				</td>
 			</tr>
 
 		{% endfor %}
-		<h2>
-			le nombre totale des books est
-			{{l}}
-		</h2>
 	</table>
 
 {% endif %}
