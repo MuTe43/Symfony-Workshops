@@ -1,48 +1,53 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Book List{% endblock %}
+{% block title %}Liste des livres{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h2 class="mb-3 text-center">📚 Book List</h2>
+<div>
+    <h2>List of Books</h2>
 
-    <table class="table table-bordered table-striped text-center align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Publication Date</th>
-                <th>Published</th>
-                <th>Author</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for book in books %}
+    {% if books is empty %}
+        <p>No Books found</p>
+    {% else %}
+        <table border="1">
+            <thead>
                 <tr>
-                    <td>{{ book.id }}</td>
-                    <td>{{ book.title }}</td>
-                    <td>{{ book.category }}</td>
-                    <td>{{ book.publicationDate ? book.publicationDate|date('Y-m-d') : '' }}</td>
-                    <td>
-                        {% if book.published %}
-                            <span class="badge bg-success">Yes</span>
-                        {% else %}
-                            <span class="badge bg-danger">No</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ book.author ? book.author.username : 'No author' }}</td>
+                    <th>Title</th>
+                    <th>Publication date</th>
+                    <th>Published</th>
+                    <th>Category</th>
+                    <th>Author</th>
+                    <th colspan="3" border="1">Actions</th>
                 </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6" class="text-muted">No books found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.publicationDate ? book.publicationDate|date('F j, Y H:i') : '' }}</td>
+                        <td>{{ book.published ? '1' : '0' }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>{{ book.author ? book.author.username : '—' }}</td>
+                        <td>
+                            <a href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                            <a href="{{ path('book_delete', {'id': book.id}) }}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Voulez-vous vraiment supprimer ce livre ?');">
+                                Delete
+                            </a>
+                            <a href="{{ path('book_detailsBook', {'id': book.id}) }}">
+                                Show
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <div class="text-center mt-3">
-        <a href="{{ path('book_add') }}" class="btn btn-primary">➕ Add New Book</a>
+        <p><strong>Number of published books :</strong> {{ publishedCount }}</p>
+        <p><strong>Number of unpublished books :</strong> {{ unpublishedCount }}</p>
+    {% endif %}
+
+    <div>
+        <a href="{{ path('book_add') }}">Create new</a>
     </div>
 </div>
 {% endblock %}
