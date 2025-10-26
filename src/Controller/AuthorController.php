@@ -131,4 +131,14 @@ final class AuthorController extends AbstractController
         return $this->redirectToRoute("author_getFromDB");
     }
 
+    #[Route('/authorsByEmail', name: 'author_list_by_email')]
+    public function listAuthorsByEmail(AuthorRepository $authorRepository): Response
+    {
+        $authors = $authorRepository->listAuthorByEmail();
+
+        return $this->render('author/list.html.twig', [
+            'authors' => $authors,
+        ]);
+    }
+
 }

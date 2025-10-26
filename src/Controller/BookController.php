@@ -108,5 +108,57 @@ class BookController extends AbstractController
             'book'=>$bookRepo->find($id),
         ]);
     }
+
+    #[Route('/books/search', name: 'book_search', methods: ['GET'])]
+    public function searchBook(Request $request, BookRepository $bookRepository): Response
+    {
+        $ref = $request->query->get('ref'); // récupère la valeur saisie dans l'input
+
+        $book = null;
+        if ($ref) {
+            $book = $bookRepository->searchBookByRef($ref);
+        }
+
+        return $this->render('book/list.html.twig', [
+            'books' => $book ? [$book] : $bookRepository->findBy(['published' => true]),
+            'publishedCount' => $bookRepository->count(['published' => true]),
+            'unpublishedCount' => $bookRepository->count(['published' => false]),
+            'search_ref' => $ref,
+        ]);
+}
+
+#[Route('/books/byAuthors', name: 'book_by_authors')]
+public function booksListByAuthors(BookRepository $bookRepository): Response
+{
+    $books = $bookRepository->booksListByAuthors();
+
+    return $this->render('book/list.html.twig', [
+        'books' => $books,
+        'publishedCount' => $bookRepository->count(['published' => true]),
+        'unpublishedCount' => $bookRepository->count(['published' => false]),
+    ]);
+}
+
+#[Route('/books/before2023', name: 'book_before2023')]
+public function booksBefore2023(BookRepository $bookRepository): Response
+{
+    $books = $bookRepository->findBooksBefore2023ByAuthorsWithMoreThan10Books();
+
+    return $this->render('book/list.html.twig', [
+        'books' => $books,
+        'publishedCount' => $bookRepository->count(['published' => true]),
+        'unpublishedCount' => $bookRepository->count(['published' => false]),
+    ]);
+}
+
+#[Route('/books/updateCategory', name: 'book_update_category')]
+public function updateCategory(BookRepository $bookRepository): Response
+{
+    $updated = $bookRepository->updateCategorySciFiToRomance();
+
+    $this->addFlash('success', "$updated livres ont été mis à jour de Science-Fiction vers Romance.");
+    return $this->redirectToRoute('book_list');
+}
+
 }
 

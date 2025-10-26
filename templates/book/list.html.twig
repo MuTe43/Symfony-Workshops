@@ -4,6 +4,11 @@
 <div>
     <h2>List of Books</h2>
 
+    <form method="get" action="{{ path('book_search') }}" class="mb-3">
+    <input type="text" name="ref" value="{{ search_ref ?? '' }}" placeholder="Rechercher par référence..." class="form-control d-inline-block w-auto">
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+
     {% if books is empty %}
         <p>No Books found</p>
     {% else %}
