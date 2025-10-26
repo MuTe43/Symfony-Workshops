@@ -127,38 +127,53 @@ class BookController extends AbstractController
         ]);
 }
 
-#[Route('/books/byAuthors', name: 'book_by_authors')]
-public function booksListByAuthors(BookRepository $bookRepository): Response
-{
-    $books = $bookRepository->booksListByAuthors();
+    #[Route('/books/byAuthors', name: 'book_by_authors')]
+    public function booksListByAuthors(BookRepository $bookRepository): Response
+    {
+        $books = $bookRepository->booksListByAuthors();
 
-    return $this->render('book/list.html.twig', [
-        'books' => $books,
-        'publishedCount' => $bookRepository->count(['published' => true]),
-        'unpublishedCount' => $bookRepository->count(['published' => false]),
-    ]);
-}
+        return $this->render('book/list.html.twig', [
+            'books' => $books,
+            'publishedCount' => $bookRepository->count(['published' => true]),
+            'unpublishedCount' => $bookRepository->count(['published' => false]),
+        ]);
+    }
 
-#[Route('/books/before2023', name: 'book_before2023')]
-public function booksBefore2023(BookRepository $bookRepository): Response
-{
-    $books = $bookRepository->findBooksBefore2023ByAuthorsWithMoreThan10Books();
+    #[Route('/books/before2023', name: 'book_before2023')]
+    public function booksBefore2023(BookRepository $bookRepository): Response
+    {
+        $books = $bookRepository->findBooksBefore2023ByAuthorsWithMoreThan10Books();
 
-    return $this->render('book/list.html.twig', [
-        'books' => $books,
-        'publishedCount' => $bookRepository->count(['published' => true]),
-        'unpublishedCount' => $bookRepository->count(['published' => false]),
-    ]);
-}
+        return $this->render('book/list.html.twig', [
+            'books' => $books,
+            'publishedCount' => $bookRepository->count(['published' => true]),
+            'unpublishedCount' => $bookRepository->count(['published' => false]),
+        ]);
+    }
 
-#[Route('/books/updateCategory', name: 'book_update_category')]
-public function updateCategory(BookRepository $bookRepository): Response
-{
-    $updated = $bookRepository->updateCategorySciFiToRomance();
+    #[Route('/books/updateCategory', name: 'book_update_category')]
+    public function updateCategory(BookRepository $bookRepository): Response
+    {
+        $updated = $bookRepository->updateCategorySciFiToRomance();
 
-    $this->addFlash('success', "$updated livres ont été mis à jour de Science-Fiction vers Romance.");
-    return $this->redirectToRoute('book_list');
-}
+        $this->addFlash('success', "$updated livres ont été mis à jour de Science-Fiction vers Romance.");
+        return $this->redirectToRoute('book_list');
+    }
+
+    #[Route('/books/between', name: 'book_between_dates')]
+    public function booksBetweenDates(BookRepository $bookRepo): Response
+    {
+        $books = $bookRepo->findBooksBetweenDates(
+            new \DateTime('2014-01-01'),
+            new \DateTime('2018-12-31')
+        );
+
+        return $this->render('book/list.html.twig', [
+            'books' => $books,
+            'publishedCount' => $bookRepo->count(['published' => true]),
+            'unpublishedCount' => $bookRepo->count(['published' => false]),
+        ]);
+    }
 
 }
 

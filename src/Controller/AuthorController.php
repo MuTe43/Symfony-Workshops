@@ -141,4 +141,28 @@ final class AuthorController extends AbstractController
         ]);
     }
 
+    #[Route('/authors/searchBooksCount', name: 'author_search_books_count', methods: ['GET'])]
+    public function searchAuthorsByBookCount(Request $request, AuthorRepository $authorRepo): Response
+    {
+        $min = $request->query->getInt('min', 0);
+        $max = $request->query->getInt('max', 1000);
+
+        $authors = $authorRepo->findAuthorsByBookCountRange($min, $max);
+
+        return $this->render('author/list.html.twig', [
+            'authors' => $authors,
+            'min' => $min,
+            'max' => $max,
+        ]);
+    }
+
+    #[Route('/authors/deleteEmpty', name: 'author_delete_empty_dql')]
+    public function deleteAuthorsWithNoBooks(AuthorRepository $authorRepo): Response
+    {
+        $count = $authorRepo->deleteAuthorsWithNoBooks();
+
+        $this->addFlash('info', "$count auteurs sans livres ont été supprimés.");
+        return $this->redirectToRoute('author_list');
+    }
+
 }

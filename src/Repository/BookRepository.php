@@ -61,6 +61,27 @@ class BookRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function countRomanceBooks(): int
+    {
+        $dql = "SELECT COUNT(b) FROM App\Entity\Book b WHERE b.category = :category";
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('category', 'Romance');
+
+        return (int) $query->getSingleScalarResult();
+    }
+
+    public function findBooksBetweenDates(\DateTime $startDate, \DateTime $endDate): array
+    {
+        $dql = "SELECT b FROM App\Entity\Book b 
+                WHERE b.publicationDate BETWEEN :start AND :end
+                ORDER BY b.publicationDate ASC";
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('start', $startDate);
+        $query->setParameter('end', $endDate);
+
+        return $query->getResult();
+    }
+
     //    /**
     //     * @return Book[] Returns an array of Book objects
     //     */

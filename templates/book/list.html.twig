@@ -9,6 +9,9 @@
     <button type="submit" class="btn btn-primary">Rechercher</button>
     </form>
 
+    {% for message in app.flashes('success') %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
     {% if books is empty %}
         <p>No Books found</p>
     {% else %}
